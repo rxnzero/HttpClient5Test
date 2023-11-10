@@ -11,31 +11,28 @@ import org.apache.hc.core5.http.io.entity.EntityUtils;
 
 public class SimplePostExample {
 
-	public SimplePostExample() {
-
-	}
-
 	public static void main(String[] args) {
+//		System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.SimpleLog");
+//		System.setProperty("org.apache.commons.logging.simplelog.showdatetime", "true");
+//		System.setProperty("org.apache.commons.logging.simplelog.log.httpclient.wire", "debug");
+//		System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.commons.httpclient", "debug");
 		SimplePostExample sample = new SimplePostExample();
 		sample.callPostService();
 	}
 	
 	public void callPostService() {
-        CloseableHttpClient httpClient = HttpClients.createDefault();
-
         String url = "http://127.0.0.1:10210/HTT/TstInHttSysBank";
         String charset = "euc-kr";
-        HttpPost httpPost = new HttpPost(url);
-
+        String requestBodyText = "0000BASICBANK0EAI20230714213113610EAISVR99BANK0001S1SAMSLTEST BANKSEND!한글";
+        try (
+        	CloseableHttpClient httpClient = HttpClients.createDefault();
+        ){
+        	HttpPost httpPost = new HttpPost(url);
 //        httpPost.setHeader("Content-Type", "text/plain; charset="+charset);
-        httpPost.setHeader("Content-Type", "application/octet-stream");
-
-        String requestBodyText = "BASICBANK0EAI20230714213113610EAISVR99BANK0001S1SAMSLTEST BANKSEND!한글";
-         
-        try {
-        	byte[] binaryData = requestBodyText.getBytes(charset);
 //            StringEntity requestEntity = new StringEntity(requestBodyText);
 //        	httpPost.setEntity(requestEntity);
+        	httpPost.setHeader("Content-Type", "application/octet-stream");
+        	byte[] binaryData = requestBodyText.getBytes(charset);
             ByteArrayEntity binaryEntity = new ByteArrayEntity(binaryData, ContentType.APPLICATION_OCTET_STREAM);
             httpPost.setEntity(binaryEntity);
             
@@ -53,12 +50,6 @@ public class SimplePostExample {
             response.close();
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            try {
-                httpClient.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
     }
 	

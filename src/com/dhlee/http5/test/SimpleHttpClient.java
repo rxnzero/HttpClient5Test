@@ -6,6 +6,7 @@ import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.SSLContext;
 
@@ -23,6 +24,7 @@ import org.apache.hc.client5.http.cookie.StandardCookieSpec;
 import org.apache.hc.client5.http.impl.auth.BasicCredentialsProvider;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.client5.http.impl.io.ManagedHttpClientConnectionFactory;
 import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
@@ -75,7 +77,14 @@ public class SimpleHttpClient {
 	
 	public static void testGetCall( String url ) throws Exception {
 		System.out.println(">> Start  testGetCall");
-		 try (final CloseableHttpClient httpclient = HttpClients.createDefault()) {
+		int timeout = 3 * 1000;
+		RequestConfig  config = RequestConfig .custom()
+			    .setConnectTimeout(timeout, TimeUnit.MILLISECONDS)
+			    .setConnectionRequestTimeout(timeout, TimeUnit.MILLISECONDS)
+			    .build();
+		
+		 try (final CloseableHttpClient httpclient = HttpClientBuilder.create()
+				  .setDefaultRequestConfig(config).build()) {
 	            final HttpGet httpget = new HttpGet(url);
 
 	            System.out.println("Executing request " + httpget.getMethod() + " " + httpget.getUri());

@@ -2,10 +2,10 @@
 <classpath>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="lib/httpclient5-5.1.jar" sourcepath="C:/Users/elink/AppData/Local/Temp/.org.sf.feeling.decompiler1683010337948/source/httpclient5-5.1-sources.jar"/>
+	<classpathentry kind="lib" path="lib/httpclient5-5.1.jar" sourcepath="C:/Users/elink/AppData/Local/Temp/.org.sf.feeling.decompiler1698803931671/source/httpclient5-5.1-sources-1698805415222.jar"/>
 	<classpathentry kind="lib" path="lib/commons-cli-1.4.jar"/>
 	<classpathentry kind="lib" path="lib/commons-codec-1.15.jar"/>
-	<classpathentry kind="lib" path="lib/httpcore5-5.1.1.jar" sourcepath="C:/Users/elink/AppData/Local/Temp/.org.sf.feeling.decompiler1693961453761/source/httpcore5-5.1.1-sources-1693964237265.jar"/>
+	<classpathentry kind="lib" path="lib/httpcore5-5.1.1.jar" sourcepath="C:/Users/elink/AppData/Local/Temp/.org.sf.feeling.decompiler1698803931671/source/httpcore5-5.1.1-sources-1698805468835.jar"/>
 	<classpathentry kind="lib" path="resources"/>
 	<classpathentry kind="lib" path="lib/log4j-core-2.14.1.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-slf4j-impl-2.14.1.jar"/>
