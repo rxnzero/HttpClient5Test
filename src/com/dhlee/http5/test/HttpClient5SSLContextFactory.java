@@ -4,10 +4,13 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.security.KeyStore;
+import java.security.cert.X509Certificate;
 import java.util.Base64;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLParameters;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import org.apache.hc.core5.ssl.SSLContextBuilder;
 import org.apache.hc.core5.ssl.TrustStrategy;
@@ -26,14 +29,33 @@ public class HttpClient5SSLContextFactory {
 				keyStore.load(keyStoreInput, keyStorePassword.toCharArray());
 			}
 
-			KeyStore trustStore = KeyStore.getInstance(type);
-			try (FileInputStream trustStoreInput = new FileInputStream(new File(trustStorePath))) {
-				trustStore.load(trustStoreInput, trustStorePassword.toCharArray());
+			
+			SSLContextBuilder sslContextBuilder = null;
+			boolean withTrust = false; 
+			if(withTrust) {
+				KeyStore trustStore = KeyStore.getInstance(type);
+				try (FileInputStream trustStoreInput = new FileInputStream(new File(trustStorePath))) {
+					trustStore.load(trustStoreInput, trustStorePassword.toCharArray());
+				}
+				sslContextBuilder = SSLContextBuilder.create()
+						.loadKeyMaterial(keyStore, keyStorePassword.toCharArray())
+						.loadTrustMaterial(trustStore, (TrustStrategy) null); // 신뢰할 모든 인증서
 			}
-
-			SSLContextBuilder sslContextBuilder = SSLContextBuilder.create()
-					.loadKeyMaterial(keyStore, keyStorePassword.toCharArray())
-					.loadTrustMaterial(trustStore, (TrustStrategy) null); // 신뢰할 모든 인증서
+			else {
+		        TrustStrategy trustAllCertificates = new TrustStrategy() {
+		            @Override
+		            public boolean isTrusted(X509Certificate[] chain, String authType) {
+		                // 모든 인증서를 신뢰함
+		            	System.out.println("===> isTrusted " + authType );
+		                return true;
+		            }
+		        };
+		        // SSLContextBuilder를 사용하여 KeyMaterial을 로드하고, TrustMaterial로 모든 인증서 신뢰 설정
+		        sslContextBuilder = SSLContextBuilder.create()
+		                .loadKeyMaterial(keyStore, keyStorePassword.toCharArray()) // 클라이언트 키스토어 로드
+		                .loadTrustMaterial(null, trustAllCertificates); // 모든 인증서를 신뢰하도록 설정
+			}
+			
 
             SSLContext sslContext = sslContextBuilder.build();
 
