@@ -16,6 +16,9 @@ import org.apache.hc.core5.ssl.SSLContextBuilder;
 import org.apache.hc.core5.ssl.TrustStrategy;
 
 public class HttpClient5SSLContextFactory {
+
+	public static boolean testMode = System.getProperty("use.test.trust", "n").equals("y");
+	
 	private HttpClient5SSLContextFactory() {
 
 	}
@@ -42,18 +45,25 @@ public class HttpClient5SSLContextFactory {
 						.loadTrustMaterial(trustStore, (TrustStrategy) null); // 신뢰할 모든 인증서
 			}
 			else {
-		        TrustStrategy trustAllCertificates = new TrustStrategy() {
-		            @Override
-		            public boolean isTrusted(X509Certificate[] chain, String authType) {
-		                // 모든 인증서를 신뢰함
-		            	System.out.println("===> isTrusted " + authType );
-		                return true;
-		            }
-		        };
-		        // SSLContextBuilder를 사용하여 KeyMaterial을 로드하고, TrustMaterial로 모든 인증서 신뢰 설정
-		        sslContextBuilder = SSLContextBuilder.create()
-		                .loadKeyMaterial(keyStore, keyStorePassword.toCharArray()) // 클라이언트 키스토어 로드
-		                .loadTrustMaterial(null, trustAllCertificates); // 모든 인증서를 신뢰하도록 설정
+				if(testMode) {
+			        TrustStrategy trustAllCertificates = new TrustStrategy() {
+			            @Override
+			            public boolean isTrusted(X509Certificate[] chain, String authType) {
+			                // 모든 인증서를 신뢰함
+			            	System.out.println("===> isTrusted " + authType );
+			                return true;
+			            }
+			        };
+			        // SSLContextBuilder를 사용하여 KeyMaterial을 로드하고, TrustMaterial로 모든 인증서 신뢰 설정
+			        sslContextBuilder = SSLContextBuilder.create()
+			                .loadKeyMaterial(keyStore, keyStorePassword.toCharArray()) // 클라이언트 키스토어 로드			                
+			                .loadTrustMaterial(null, trustAllCertificates); // 모든 인증서를 신뢰하도록 설정
+				}
+				else {
+					sslContextBuilder = SSLContextBuilder.create()
+			                .loadKeyMaterial(keyStore, keyStorePassword.toCharArray()) // 클라이언트 키스토어 로드
+			                .loadTrustMaterial((TrustStrategy) null); // root CA
+				}
 			}
 			
 

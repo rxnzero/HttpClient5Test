@@ -37,6 +37,8 @@ public class MtlsHttpClient {
 	}
 	
 	public static void main(String[] args) throws Exception {
+		System.setProperty("use.test.trust", "y");
+		
 		String mtlsTestUrl = "https://localhost:8443/case/001/transactions"; //"https://localhost:8443";
 		
 		SSLContext sslContext = null;
@@ -94,7 +96,7 @@ public class MtlsHttpClient {
 //				"TLS_EMPTY_RENEGOTIATION_INFO_SCSV"
 //		};
 		
-		 String type = "JSK";
+		 String type = "P12";
 		if("JSK".equals(type)) {
 			// 클라이언트 인증서가 서버에 등록되지 않은 경우
 			//		Exception in thread "main" javax.net.ssl.SSLHandshakeException: Received fatal alert: bad_certificate
@@ -126,7 +128,7 @@ public class MtlsHttpClient {
 //    	=> NoopHostnameVerifier.INSTANCE
         SSLConnectionSocketFactory sslSocketFactory = new SSLConnectionSocketFactory(
         		sslContext
-        		,NoopHostnameVerifier.INSTANCE // Hostname verifier 비활성화
+//        		,NoopHostnameVerifier.INSTANCE // Hostname verifier 비활성화
         		);
 
         HttpClientConnectionManager connectionManager = PoolingHttpClientConnectionManagerBuilder.create().setSSLSocketFactory(sslSocketFactory).build();
